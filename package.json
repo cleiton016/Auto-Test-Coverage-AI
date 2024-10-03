@@ -9,15 +9,55 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "auto-test-coverage-ai.helloWorld",
-        "title": "Hello World"
+        "command": "auto-test-coverage-ai.showCoverage",
+        "title": "Show Code Coverage"
+      },
+      {
+        "command": "auto-test-coverage-ai.refreshCoverage",
+        "title": "Refresh Coverage",
+        "icon": "assets/icons/play.svg"
+      },
+      {
+        "command": "auto-test-coverage-ai.openFile",
+        "title": "Open File"
+        
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codeCoverage",
+          "title": "Code Coverage",
+          "icon": "assets/icons/full_coverage.svg"
+        }
+      ]
+    },
+    "views": {
+      "codeCoverage": [
+        {
+          "id": "coverageView",
+          "name": "Coverage Files",
+          "contextualTitle": "Coverage",
+          "when": "true"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "auto-test-coverage-ai.refreshCoverage",
+          "when": "view == coverageView",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -34,16 +74,19 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.93.0",
     "@types/mocha": "^10.0.8",
     "@types/node": "20.x",
+    "@types/vscode": "^1.93.0",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
-    "eslint": "^9.11.1",
-    "esbuild": "^0.24.0",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^5.6.2",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.11.1",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "lcov-parse": "^1.0.0"
   }
 }

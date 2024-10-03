@@ -1,26 +1,35 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { getCoverageFromLcov, highlightCoverage, LCOV_FILE_PATH } from './utils';
+import { CodeCoverageProvider } from './codeCoverageProvider';
+import { CoverageFile } from './interfaces';
 
 // This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    const codeCoverageProvider = new CodeCoverageProvider();
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "auto-test-coverage-ai" is now active!');
+	const disposable = vscode.commands.registerCommand('auto-test-coverage-ai.showCoverage', () => {
+        codeCoverageProvider.showCoverage();
+    });
+    context.subscriptions.push(disposable);
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('auto-test-coverage-ai.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Auto Test Coverage AI!');
-	});
+    // Refresh the coverage view when the lcov.info file changes
+    const covRefresh = vscode.commands.registerCommand('auto-test-coverage-ai.refreshCoverage', () => {
+        codeCoverageProvider.refreshCoverage();
+    });
+    context.subscriptions.push(covRefresh);
 
-	context.subscriptions.push(disposable);
+    // Open file in editor when clicking on the coverage item
+    const openFile = vscode.commands.registerCommand('auto-test-coverage-ai.openFile', (resourceUri: vscode.Uri) => {
+        vscode.window.showTextDocument(resourceUri).then(async editor => {
+            const data = await getCoverageFromLcov(LCOV_FILE_PATH , editor.document.uri.fsPath) as CoverageFile
+            highlightCoverage(editor, data.coveredLines, data.uncoveredLines); // Aplica as decorações
+        });
+    });
+    context.subscriptions.push(openFile);
+    
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
+
+

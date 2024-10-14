@@ -7,26 +7,34 @@ export class CoverageItem extends vscode.TreeItem {
     Uri: vscode.Uri | undefined;
     
     constructor(
-        public readonly label: string,
-        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+        public label: string,
+        public collapsibleState: vscode.TreeItemCollapsibleState,
         public readonly resourceUri?: vscode.Uri,
-        public readonly percentage?: number,
+        public readonly percentages?:  { lines: number, functions: number, branches: number },
+        public readonly typeCov?: string
     ) {
         super(label, collapsibleState);
 
-        this.Uri = resourceUri;
-        // Exibe a porcentagem de cobertura apenas para arquivos
-        if (this.percentage !== undefined) {
-            this.description = `${this.percentage.toFixed(0)}%`;
-            
-            this.tooltip = `${this.label} - ${this.percentage}% covered`;
+        this.setTooltipAndDescription();
+        this.openFile();
+        
+    }
+
+    private setTooltipAndDescription() {
+        if (this.percentages !== undefined) {
+            this.description = `${this.percentages.lines.toFixed(0)}% | ${this.percentages.functions.toFixed(0)}% | ${this.percentages.branches.toFixed(0)}%`;
+            // Markdown para exibir a porcentagem de cobertura para todos os tipos
+            this.tooltip = new vscode.MarkdownString(`
+                Linhas: ${this.percentages.lines.toFixed(0)+'%'} | Funções: ${this.percentages.functions.toFixed(0)+'%'} | Branches: ${this.percentages.branches.toFixed(0)+'%'}`);
             // Define o ícone do arquivo com base na cobertura
-            //this.iconPath = this.getIconForCoverage(this.percentage!);
+            this.iconPath = this.getIconForCoverage(this.percentages.lines!);
         } else {
             // Ícone de pasta
             this.iconPath = new vscode.ThemeIcon('folder');
         };
+    }
 
+    private openFile() {
         if (this.resourceUri) {
             // Deve pegar o caminho completo do arquivo para abrir no editor
             const fullPathUri =  vscode.Uri.file(path.join(vscode.workspace.rootPath || '', this.resourceUri.fsPath))
@@ -36,9 +44,6 @@ export class CoverageItem extends vscode.TreeItem {
                 arguments: [fullPathUri]
             };
         }
-
-        
-        
     }
 
     // Método para definir um ícone com base na porcentagem de cobertura

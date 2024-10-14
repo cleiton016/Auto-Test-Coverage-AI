@@ -1,9 +1,25 @@
 import * as vscode from 'vscode';
-import { CoverageProvider } from './view/coverageProvider';
-import { highlightCoverage, LCOV_FILE_PATH, getCoverageFromLcov, watchLcovFile } from './utils';
-import { CoverageData, CoverageFile } from './interfaces';
+import { CoverageProvider } from '@view/tree-view/coverageProvider';
+import { highlightCoverage, LCOV_FILE_PATH, getCoverageFromLcov, watchLcovFile, $selectedCoverageType, onSelectedCoverageTypeChanged } from '@/utils';
+import { CoverageData, CoverageFile } from '@/interfaces';
+import { SelectTypeCoverageProvider } from './view/select-type-coverage/selectTypeCoverageProvider';
 
 export class CodeCoverageProvider {
+    private coverageProvider: CoverageProvider = new CoverageProvider();
+    private selectTypeCoverageProvider: SelectTypeCoverageProvider = new SelectTypeCoverageProvider();
+    private selectedType: string | undefined;
+    constructor() {
+        this.selectTypeCoverageProvider.setCoverageTypes(['Lines', 'Functions', 'Branches']);
+        vscode.window.registerTreeDataProvider('coverageView', this.coverageProvider);
+        vscode.window.registerTreeDataProvider('typeCoverage', this.selectTypeCoverageProvider);
+        onSelectedCoverageTypeChanged((type) => {
+            this.selectedType = type;
+            this.selectTypeCoverageProvider.refresh();
+        });
+        
+        this.refreshCoverage();
+    }
+
     public async showCoverage(): Promise<void> {
 
         const editor = vscode.window.activeTextEditor;
@@ -23,12 +39,14 @@ export class CodeCoverageProvider {
     }
 
     public async refreshCoverage(): Promise<void> {
-        const coverageProvider = new CoverageProvider();
-        vscode.window.registerTreeDataProvider('coverageView', coverageProvider);
-
+        console.log('Refreshing coverage data...');
         const lcovData = await getCoverageFromLcov(LCOV_FILE_PATH);
 
-        coverageProvider.setCoverageFiles(lcovData as CoverageData);
+        this.coverageProvider.setCoverageFiles(lcovData as CoverageData, this.selectedType);
         watchLcovFile(LCOV_FILE_PATH);
+    }
+
+    get selectedCoverageType(): string {
+        return this.selectedType!;
     }
 }

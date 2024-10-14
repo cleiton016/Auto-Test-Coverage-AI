@@ -1,16 +1,17 @@
+// importações
 import * as vscode from "vscode";
 import * as fs from 'fs';
 import * as util from 'util';
 import * as chokidar from 'chokidar';
 import path from "path";
-import { CoverageCache } from "./coverageCache";
-import { CoverageData, CoverageFile } from "./interfaces";
+import { CoverageCache } from "@/coverageCache";
+import { CoverageData, CoverageFile } from "@/interfaces";
 const parse = require('lcov-parse');
 
+// Codigo 
 export const LCOV_FILE_PATH = path.join(vscode.workspace.rootPath || '', 'coverage/lcov.info');
 
 export let CACHE =  new CoverageCache();
-
 
 export const COVERED_DECORATION_TYPE = vscode.window.createTextEditorDecorationType({
     backgroundColor: 'rgb(67 92 67)',  // Verde claro para linhas cobertas
@@ -24,28 +25,43 @@ export const UNCOVERED_DECORATION_TYPE = vscode.window.createTextEditorDecoratio
 
 export const parseLcov = util.promisify(parse);
 
+// Obsevable para monitorar a seleção do tipo de cobertura
+export const $selectedCoverageType = new vscode.EventEmitter<string | undefined>();
+export const onSelectedCoverageTypeChanged = $selectedCoverageType.event
+onSelectedCoverageTypeChanged((type) => {
+    vscode.window.showInformationMessage(`Cobertura trocada para: ${type}`);
+    showCoverageReport(vscode.window.activeTextEditor, type);
+});
+
+
 
 export function highlightCoverage(editor: vscode.TextEditor, coveredLines: number[], uncoveredLines: number[]) {
+
+
+    
     const coveredDecorations: vscode.DecorationOptions[] = [];
     const uncoveredDecorations: vscode.DecorationOptions[] = [];
 
-    coveredLines.forEach(line => {
+    if (!coveredLines || !uncoveredLines) {
+        return;
+    }
+    coveredLines!.forEach(line => {
         const range = new vscode.Range(line - 1, 0, line - 1, 0);
         coveredDecorations.push({ range });
     });
 
-    uncoveredLines.forEach(line => {
+    uncoveredLines!.forEach(line => {
         const range = new vscode.Range(line - 1, 0, line - 1, 0);
         uncoveredDecorations.push({ range });
     });
 
-    // Verifica se já existem decorações para evitar chamadas duplicadas
-    if (coveredDecorations.length > 0) {
-        editor.setDecorations(COVERED_DECORATION_TYPE, coveredDecorations);
-    }
-    if (uncoveredDecorations.length > 0) {
-        editor.setDecorations(UNCOVERED_DECORATION_TYPE, uncoveredDecorations);
-    }
+    editor.setDecorations(COVERED_DECORATION_TYPE, coveredDecorations);
+    editor.setDecorations(UNCOVERED_DECORATION_TYPE, uncoveredDecorations);
+}
+
+function clearDecorations(editor: vscode.TextEditor) {
+    editor.setDecorations(COVERED_DECORATION_TYPE, []);
+    editor.setDecorations(UNCOVERED_DECORATION_TYPE, []);
 }
 
 export function getCoverageAndUncoveredLines(filePath: string, lcovData: any) {
@@ -91,22 +107,21 @@ async function parseLcovFile(LCOV_FILE_PATH: string): Promise<CoverageData> {
                 }
 
                 // Mapeia os dados lidos para a estrutura CoverageData
-                console.log('lcovData: ',lcovData);
-                
                 const coverageData: CoverageData = {
-                    files: lcovData.map((entry: any) => ({
+                    files: lcovData.map((entry: any) => (
+                        {
                         filePath: entry.file,
                         totalLines: entry.lines.found,
-                        coveragePercentage: (entry.lines.hit / entry.lines.found) * 100,
-                        coveredLines: entry.lines.details
-                            .filter((line: any) => line.hit > 0)
-                            .map((line: any) => line.line),
-                        uncoveredLines: entry.lines.details
-                            .filter((line: any) => line.hit === 0)
-                            .map((line: any) => line.line)
-                    }))
-                };
-
+                        linesCoveragePercentage: entry.lines.found > 0 ? (entry.lines.hit / entry.lines.found) * 100 : 100,
+                        functionsCoveragePercentage: entry.functions.found > 0? (entry.functions.hit / entry.functions.found) * 100: 100,
+                        branchesCoveragePercentage: entry.branches.found > 0? (entry.branches.hit / entry.branches.found) * 100: 100,
+                        coveredLines: entry.lines.details.filter((line: any) => line.hit > 0).map((line: any) => line.line),
+                        uncoveredLines: entry.lines.details.filter((line: any) => line.hit === 0).map((line: any) => line.line),
+                        coveredFunctions: entry.functions.details.filter((func: any) => func.hit > 0).map((func: any) => (func.line)),
+                        uncoveredFunctions: entry.functions.details.filter((func: any) => func.hit === 0).map((func: any) => (func.line)),
+                        coveredBranches: entry.branches.details.filter((branch: any) => branch.taken > 0).map((branch: any) => (branch.line)),
+                        uncoveredBranches: entry.branches.details.filter((branch: any) => branch.taken === 0).map((branch: any) => (branch.line))
+                }))};
                 resolve(coverageData);
             });
         });
@@ -116,19 +131,14 @@ async function parseLcovFile(LCOV_FILE_PATH: string): Promise<CoverageData> {
 export async function getCoverageFromLcov(filePathLcov: string, filePath?: string): Promise<CoverageData | CoverageFile> {
     // Verifica se o cache é válido
     if (CACHE.isCacheValid(filePathLcov)) {
-        console.log("Usando cache para cobertura");
         if (filePath) {
-            const coverageData = CACHE.getCoverage(filePathLcov)!;            
-            return coverageData.files.find(file => filePath.includes(file.filePath))!;
+            return CACHE.getCoverageFile(filePath)!;
         }
         return CACHE.getCoverage(filePathLcov)!;
     }
 
     // Analisa o arquivo LCOV (se não estiver em cache ou modificado)
-    console.log("Analisando o arquivo LCOV");
     const coverage = await parseLcovFile(LCOV_FILE_PATH);
-    console.log('Arq: ',coverage);
-    
 
     // Atualiza o cache
     CACHE.updateCache(filePathLcov, coverage);
@@ -144,4 +154,26 @@ export function watchLcovFile(LCOV_FILE_PATH: string) {
     watcher.on('change', async () => {
         vscode.commands.executeCommand('auto-test-coverage-ai.refreshCoverage');
     });
+}
+
+export async function showCoverageReport(editor, type) {
+    if (!editor) {
+        vscode.window.showErrorMessage('Nenhum arquivo aberto no editor.');
+        return;
+    }
+
+    const data = await getCoverageFromLcov(LCOV_FILE_PATH, editor.document.uri.fsPath) as CoverageFile;
+    // limpa as decorações
+    clearDecorations(editor);
+    switch (type) {
+        case 'lines':
+            highlightCoverage(editor, data.coveredLines, data.uncoveredLines);
+            break;
+        case 'functions':
+            highlightCoverage(editor, data.coveredFunctions, data.uncoveredFunctions);
+            break;
+        case 'branches':
+            highlightCoverage(editor, data.coveredBranches, data.uncoveredBranches);
+            break;
+    }
 }

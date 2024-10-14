@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { CoverageItem } from './coverageItem';
-import { CoverageData, CoverageFile } from '../interfaces';
-
+import { CoverageData } from '@/interfaces';
 
 
 export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
@@ -29,11 +28,15 @@ export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
         }
     }
 
-    setCoverageFiles(data: CoverageData) {
+    setCoverageFiles(data: CoverageData, selectedType?: string): void {
         // Extrai os arquivos do CoverageData
-        const files: { label: string, percentage: number }[] = data.files.map(file => ({
+        const files: { label: string, percentages: { lines: number, functions: number, branches: number } }[] = data.files.map(file => ({
             label: file.filePath,  // Usar o filePath do CoverageFile
-            percentage: file.coveragePercentage  // Calcular a porcentagem de cobertura para o arquivo
+            percentages: {
+                lines: file.linesCoveragePercentage,
+                functions: file.functionsCoveragePercentage,
+                branches: file.branchesCoveragePercentage
+            }
         }));
 
         // Reiniciar a árvore
@@ -53,15 +56,15 @@ export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
                     if (isFile) {
                         // Criar um item de arquivo com a porcentagem de cobertura
                         existingItem = new CoverageItem(
-                            part, 
-                            vscode.TreeItemCollapsibleState.None, 
-                            vscode.Uri.file(file.label), 
-                            file.percentage
+                            part,
+                            vscode.TreeItemCollapsibleState.None,
+                            vscode.Uri.file(file.label),
+                            file.percentages
                         );
                     } else {
                         // Criar um item de diretório
                         existingItem = new CoverageItem(
-                            part, 
+                            part,
                             vscode.TreeItemCollapsibleState.Collapsed
                         );
                         existingItem.children = [];
@@ -79,13 +82,39 @@ export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
             });
         });
 
+        this.selectCurrentFile()
         this.refresh();  // Atualizar a árvore
     }
 
-    calculateCoveragePercentage(file: any): number {
-        const totalLines = file.lines.found;
-        const coveredLines = file.lines.hit;
-        return (coveredLines / totalLines) * 100;
+    selectCurrentFile(): void {
+        const activeEditor = vscode.window.activeTextEditor;
+        if (activeEditor) {
+            const filePath = activeEditor.document.uri.fsPath;
+            this.locateAndExpandFile(filePath);
+        }
+    }
+
+    locateAndExpandFile(filePath: string): void {
+        // Função para localizar e expandir o arquivo na árvore
+        const parts = path.normalize(filePath).split(path.sep);
+        let currentLevel: CoverageItem[]  = this.coverageTree;
+        
+        parts.forEach((part, index) => {
+            const isFile = index === parts.length - 1;
+            const foundItem = currentLevel.find(item =>{ 
+                return item.label === part? item: false;
+            });
+            
+            if (foundItem) {
+                if (isFile) {
+                    foundItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
+                    vscode.commands.executeCommand('revealInExplorer', foundItem.resourceUri);
+                } else if (foundItem.children) {
+                    currentLevel = foundItem.children;
+                    foundItem.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+                }
+            }
+        });
+
     }
 }
-

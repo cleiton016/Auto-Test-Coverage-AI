@@ -10,12 +10,59 @@ export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
 
     private coverageTree: CoverageItem[] = [];
 
-    refresh(): void {
-        this._onDidChangeTreeData.fire();
+    refresh(item?): void {
+        if (item) {
+            this._onDidChangeTreeData.fire(item);
+        } else {
+            this._onDidChangeTreeData.fire(undefined);
+        }
+    }
+
+    getElement(filePath: string): CoverageItem {
+        const parts = path.normalize(filePath).split(path.sep);
+        let currentLevel: CoverageItem[] = this.coverageTree;
+        // pega o ultimo item do array
+        let element: CoverageItem = new CoverageItem('', vscode.TreeItemCollapsibleState.None);
+        parts.forEach((part, index) => {
+            const isFile = index === parts.length - 1;
+            const foundItem = currentLevel.find(item => item.label === part);
+
+            if (foundItem) {
+                if (isFile) {
+                    element = foundItem;
+                    return element;
+                } else if (foundItem.children) {
+                    currentLevel = foundItem.children;
+                }
+            }
+        });
+
+        return element;
     }
 
     getTreeItem(element: CoverageItem): vscode.TreeItem {
         return element;
+    }
+
+    getParents(element: CoverageItem): CoverageItem[] | undefined {
+        // Deve retornar uma lista contendo todos os parentes até o nível raiz
+        const parents: CoverageItem[] = [];
+        let parts = element.resourceUri?.fsPath!.split(path.sep);
+        let currentLevel: CoverageItem[] = this.coverageTree;
+        parts?.forEach((part, index) => {
+            const isFile = index === parts!.length - 1;
+            const foundItem = currentLevel.find(item => item.label === part);
+            if (foundItem) {
+                if (isFile) {
+                    return;
+                } else if (foundItem.children) {
+                    parents.push(foundItem);
+                    currentLevel = foundItem.children;
+                }
+            }
+        });
+        return parents;
+        
     }
 
     getChildren(element?: CoverageItem): Thenable<CoverageItem[]> {
@@ -69,7 +116,7 @@ export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
                         );
                         existingItem.children = [];
                     }
-                    currentLevel.push(existingItem);  // Adicionar o item ao nível atual da árvore
+                    currentLevel.push(existingItem); // Adicionar o item ao nível atual da árvore
                 }
 
                 // Se não for um arquivo, continuar navegando nas subpastas
@@ -82,39 +129,21 @@ export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
             });
         });
 
-        this.selectCurrentFile()
         this.refresh();  // Atualizar a árvore
     }
 
-    selectCurrentFile(): void {
-        const activeEditor = vscode.window.activeTextEditor;
-        if (activeEditor) {
-            const filePath = activeEditor.document.uri.fsPath;
-            this.locateAndExpandFile(filePath);
-        }
-    }
 
     locateAndExpandFile(filePath: string): void {
-        // Função para localizar e expandir o arquivo na árvore
-        const parts = path.normalize(filePath).split(path.sep);
-        let currentLevel: CoverageItem[]  = this.coverageTree;
-        
-        parts.forEach((part, index) => {
-            const isFile = index === parts.length - 1;
-            const foundItem = currentLevel.find(item =>{ 
-                return item.label === part? item: false;
-            });
-            
-            if (foundItem) {
-                if (isFile) {
-                    foundItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
-                    vscode.commands.executeCommand('revealInExplorer', foundItem.resourceUri);
-                } else if (foundItem.children) {
-                    currentLevel = foundItem.children;
-                    foundItem.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+        const element = this.getElement(filePath);
+        const parents = this.getParents(element);
+        if (parents) {
+            parents.forEach(parent => {
+                console.log('id: ', parent.id ,'Parent: ', parent.label, 'Collapsible State: ', parent.collapsibleState);
+                if (parent.collapsibleState === vscode.TreeItemCollapsibleState.Collapsed) {
+                    parent.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
                 }
-            }
-        });
-
+            });
+        }
+        this.refresh();
     }
 }

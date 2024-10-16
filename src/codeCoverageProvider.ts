@@ -46,6 +46,22 @@ export class CodeCoverageProvider {
         watchLcovFile(LCOV_FILE_PATH);
     }
 
+    public refreshTree(): void {
+        this.coverageProvider.refresh();
+    }
+    // Expor o método locateAndExpandFile
+    public locateAndExpandFile(filePath: string): void {
+        this.coverageProvider.locateAndExpandFile(filePath);
+    }
+
+    public getParent(file): void {
+        console.log('File: ', file);
+        
+        const element = this.coverageProvider.getElement(file);
+        console.log('Element: ', element);
+        console.log('Parent: ', this.coverageProvider.getParents(element));
+    }
+
     get selectedCoverageType(): string {
         return this.selectedType!;
     }

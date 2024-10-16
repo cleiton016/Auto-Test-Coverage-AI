@@ -14,6 +14,7 @@ export class CoverageItem extends vscode.TreeItem {
         public readonly typeCov?: string
     ) {
         super(label, collapsibleState);
+        this.id = label;
 
         this.setTooltipAndDescription();
         this.openFile();
@@ -55,5 +56,10 @@ export class CoverageItem extends vscode.TreeItem {
         } else {
             return new vscode.ThemeIcon('error'); // Ícone de erro
         }
+    }
+
+    // Método para definir o nome do objeto
+    public toString(): string {
+        return this.label;
     }
 }

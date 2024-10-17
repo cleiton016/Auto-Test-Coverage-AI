@@ -1,71 +1,47 @@
-# auto-test-coverage-ai README
+# VSCode Code Coverage Extension
 
-This is the README for your extension "auto-test-coverage-ai". After writing up a brief description, we recommend including the following sections.
+Esta extensão para o Visual Studio Code permite que os desenvolvedores visualizem a cobertura de código diretamente no editor. Com esta extensão, você pode identificar rapidamente linhas, funções e branches não cobertos, ajudando a melhorar a qualidade e os testes de seu código.
 
-## Features
+## Funcionalidades
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Visualização em tempo real da cobertura de código.
+- Suporte para diferentes tipos de cobertura: linhas, funções e branches.
+- Opções de seleção para exibir diferentes métricas de cobertura.
+- Integração com relatórios LCOV para exibição de cobertura detalhada.
+- Expansão automática de arquivos com cobertura incompleta.
 
-For example if there is an image subfolder under your extension project workspace:
+## Instalação
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Faça o download da extensão do Visual Studio Marketplace ou do repositório.
+2. Abra o Visual Studio Code.
+3. Vá até a aba **Extensões** e clique em **Instalar a partir do VSIX** se estiver instalando manualmente.
+4. Após instalar, abra qualquer projeto com relatórios LCOV e a extensão automaticamente detectará a cobertura.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Como Usar
 
-## Requirements
+1. Abra um arquivo de código em seu projeto.
+2. Selecione o tipo de cobertura que deseja visualizar (linhas, funções ou branches) através do seletor na view `codeCoverage`.
+3. A extensão irá destacar visualmente as partes do código que estão cobertas ou não pelos testes.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## Atalhos
 
-## Extension Settings
+- **Mostrar cobertura de código**: Execute o comando `Coverage: Show Coverage` no Pallete de comandos (`Ctrl+Shift+P`).
+- **Atualizar cobertura de código**: Execute o comando `Coverage: Refresh` para recarregar os dados de cobertura.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## Suporte
 
-For example:
+Se você encontrar algum problema ou tiver sugestões, por favor, abra uma [issue no GitHub](#) (substitua com o link correto se o repositório for acessível).
 
-This extension contributes the following settings:
+## Licença
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+Este projeto está licenciado sob a Licença MIT. Para mais informações, consulte o arquivo `LICENSE` incluído na extensão.
 
-## Known Issues
+## Contribuições
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Contribuições são bem-vindas! Sinta-se à vontade para abrir um Pull Request com melhorias ou novas funcionalidades.
 
-## Release Notes
+## Apoie o Projeto
 
-Users appreciate release notes as you update your extension.
+Se você gostou desta extensão e quer apoiar o desenvolvimento contínuo, considere fazer uma doação. Toda contribuição é bem-vinda!
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+[Faça uma doação](https://biolivre.com.br/cleitondev)

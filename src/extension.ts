@@ -7,7 +7,7 @@ export function activate(context: vscode.ExtensionContext) {
     const codeCoverageProvider = new CodeCoverageProvider();
     vscode.window.onDidChangeActiveTextEditor(editor => {
         if (editor) {
-            codeCoverageProvider.refreshCoverage();
+            codeCoverageProvider.locateAndExpandFile(editor.document.uri.fsPath);
         }
     });
     const showCoverage = vscode.commands.registerCommand('auto-test-coverage-ai.showCoverage', () => {

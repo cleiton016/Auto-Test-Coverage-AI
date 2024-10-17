@@ -9,7 +9,36 @@ import { CoverageData, CoverageFile } from "@/interfaces";
 const parse = require('lcov-parse');
 
 // Codigo 
-export const LCOV_FILE_PATH = path.join(vscode.workspace.rootPath || '', 'coverage/lcov.info');
+export const LCOV_FILE_PATH = findLcovFile() || '';
+
+function findLcovFile(): string | undefined {
+    const workspaceRoot = vscode.workspace.rootPath || '';
+    const coverageDir = path.join(workspaceRoot, 'coverage');
+    
+    try {
+        // Verifica se o diretório de cobertura existe
+        if (fs.existsSync(coverageDir)) {
+            const files = fs.readdirSync(coverageDir);
+
+            // Procura por arquivos que possam ser arquivos LCOV
+            const lcovFile = files.find(file => file.endsWith('.info') || file.endsWith('.lcov'));
+
+            if (lcovFile) {
+                // Retorna o caminho completo do arquivo LCOV encontrado
+                return path.join(coverageDir, lcovFile);
+            } else {
+                vscode.window.showErrorMessage('Nenhum arquivo de cobertura encontrado no diretório de cobertura.');
+            }
+        } else {
+            vscode.window.showErrorMessage('Diretório de cobertura não encontrado.');
+        }
+    } catch (error) {
+        console.error('Erro ao buscar arquivo de cobertura:', error);
+        vscode.window.showErrorMessage('Erro ao buscar arquivo de cobertura.');
+    }
+
+    return undefined;
+};
 
 export let CACHE =  new CoverageCache();
 

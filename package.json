@@ -10,7 +10,6 @@
     "Other"
   ],
   "activationEvents": [
-    "*",
     "onView:codeCoverage"
   ],
   "main": "./dist/extension.js",
@@ -18,21 +17,12 @@
     "commands": [
       {
         "command": "auto-test-coverage-ai.showCoverage",
-        "title": "Show Code Coverage"
-        
+        "title": "Auto Test Coverage AI: Show Code Coverage"
       },
       {
         "command": "auto-test-coverage-ai.refreshCoverage",
-        "title": "Refresh Coverage",
-        "icon": "assets/icons/play.svg"
-      },
-      {
-        "command": "auto-test-coverage-ai.openFile",
-        "title": "Open File"
-      },
-      {
-        "command": "auto-test-coverage-ai.selectCoverageType",
-        "title": "Select Coverage Type"
+        "title": "Auto Test Coverage AI: Refresh Coverage",
+        "icon": "assets/icons/refresh.svg"
       }
     ],
     "viewsContainers": {
@@ -66,11 +56,6 @@
       "view/title": [
         {
           "command": "auto-test-coverage-ai.refreshCoverage",
-          "when": "view == coverageView",
-          "group": "navigation"
-        },
-        {
-          "command": "auto-test-coverage-ai.selectCoverageType",
           "when": "view == coverageView",
           "group": "navigation"
         }

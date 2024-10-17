@@ -2,7 +2,7 @@
   "name": "auto-test-coverage-ai",
   "displayName": "Auto Test Coverage AI",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "cleiton-dev",
   "license":"LGPL-3.0-only",
   "repository": {

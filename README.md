@@ -42,7 +42,7 @@
 
 ## 🧑‍💻 Contribuições e Feedback
 
-Contribuições são bem-vindas! Se você tem alguma sugestão ou encontrou um problema, deixe seu comentario
+Contribuições são bem-vindas! Se você tem alguma sugestão ou encontrou um problema, deixe seu comentario ou sinta-se à vontade para abrir [issues e pull requests](https://github.com/cleiton016/Auto-Test-Coverage-AI/issues) no repositório do projeto.
 
 ## 💖 Doações
 
@@ -51,4 +51,4 @@ Se você gostou da extensão e deseja apoiar o desenvolvimento contínuo, consid
 ## 📜 Licença
 Esta extensão está licenciada sob a Creative Commons Attribution-NonCommercial 4.0 International. Isso significa que você pode usar e colaborar com o código livremente, mas não pode utilizá-lo para fins comerciais sem permissão prévia.
 
-Veja o arquivo [LICENSE](https://creativecommons.org/licenses/by-nc/4.0/deed.pt-br) para mais detalhes.
+Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.

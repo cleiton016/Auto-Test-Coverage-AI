@@ -15,6 +15,11 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 - Tooltip com detalhes de cobertura ao passar o mouse sobre arquivos na árvore de cobertura.
 - Seleção de tipo de cobertura a ser visualizada (Linhas, Funções, Branches).
   
+## [0.0.2] - 2024-10-17
+
+## Melhorias
+- Identificação automatica do arquivo de cobertura
+
 ### O que está por vir
 - Integração com LLM para geração automática de testes.
 - Definição de contexto para geração de testes focados no código não coberto.

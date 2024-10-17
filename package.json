@@ -3,6 +3,12 @@
   "displayName": "Auto Test Coverage AI",
   "description": "",
   "version": "0.0.1",
+  "publisher": "cleiton-dev",
+  "license":"LGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cleiton016/Auto-Test-Coverage-AI"
+  },
   "engines": {
     "vscode": "^1.93.0"
   },

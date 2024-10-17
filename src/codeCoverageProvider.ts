@@ -3,15 +3,23 @@ import { CoverageProvider } from '@view/tree-view/coverageProvider';
 import { highlightCoverage, LCOV_FILE_PATH, getCoverageFromLcov, watchLcovFile, $selectedCoverageType, onSelectedCoverageTypeChanged } from '@/utils';
 import { CoverageData, CoverageFile } from '@/interfaces';
 import { SelectTypeCoverageProvider } from './view/select-type-coverage/selectTypeCoverageProvider';
+import { CoverageItem } from './view/tree-view/coverageItem';
 
 export class CodeCoverageProvider {
     private coverageProvider: CoverageProvider = new CoverageProvider();
     private selectTypeCoverageProvider: SelectTypeCoverageProvider = new SelectTypeCoverageProvider();
     private selectedType: string | undefined;
+    private treeView: vscode.TreeView<CoverageItem>;
+
     constructor() {
         this.selectTypeCoverageProvider.setCoverageTypes(['Lines', 'Functions', 'Branches']);
-        vscode.window.registerTreeDataProvider('coverageView', this.coverageProvider);
+
+        // Use createTreeView para a cobertura
+        this.treeView = vscode.window.createTreeView('coverageView', {
+            treeDataProvider: this.coverageProvider
+        });
         vscode.window.registerTreeDataProvider('typeCoverage', this.selectTypeCoverageProvider);
+        
         onSelectedCoverageTypeChanged((type) => {
             this.selectedType = type;
             this.selectTypeCoverageProvider.refresh();
@@ -21,7 +29,6 @@ export class CodeCoverageProvider {
     }
 
     public async showCoverage(): Promise<void> {
-
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             vscode.window.showErrorMessage('Nenhum arquivo aberto no editor.');
@@ -43,23 +50,17 @@ export class CodeCoverageProvider {
         const lcovData = await getCoverageFromLcov(LCOV_FILE_PATH);
 
         this.coverageProvider.setCoverageFiles(lcovData as CoverageData, this.selectedType);
+        const fileOpened = vscode.window.activeTextEditor?.document.uri.fsPath;
+        if (fileOpened) {
+            this.locateAndExpandFile(fileOpened);
+        }
         watchLcovFile(LCOV_FILE_PATH);
     }
 
-    public refreshTree(): void {
-        this.coverageProvider.refresh();
-    }
-    // Expor o método locateAndExpandFile
+    // Método para localizar e expandir o arquivo
     public locateAndExpandFile(filePath: string): void {
-        this.coverageProvider.locateAndExpandFile(filePath);
-    }
-
-    public getParent(file): void {
-        console.log('File: ', file);
-        
-        const element = this.coverageProvider.getElement(file);
-        console.log('Element: ', element);
-        console.log('Parent: ', this.coverageProvider.getParents(element));
+        const item = this.coverageProvider.getElement(filePath);
+        this.treeView.reveal(item, { select: true, focus: true, expand: true });
     }
 
     get selectedCoverageType(): string {

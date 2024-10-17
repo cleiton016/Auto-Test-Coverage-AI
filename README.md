@@ -1,47 +1,54 @@
-# VSCode Code Coverage Extension
 
-Esta extensão para o Visual Studio Code permite que os desenvolvedores visualizem a cobertura de código diretamente no editor. Com esta extensão, você pode identificar rapidamente linhas, funções e branches não cobertos, ajudando a melhorar a qualidade e os testes de seu código.
+# Auto Test Coverage AI
 
-## Funcionalidades
+**Auto Test Coverage AI** é uma extensão poderosa para o Visual Studio Code, projetada para ajudar desenvolvedores a visualizar a cobertura de código de maneira prática e intuitiva. A extensão oferece insights valiosos sobre a qualidade dos testes, permitindo que você identifique áreas que precisam de mais atenção.
 
-- Visualização em tempo real da cobertura de código.
-- Suporte para diferentes tipos de cobertura: linhas, funções e branches.
-- Opções de seleção para exibir diferentes métricas de cobertura.
-- Integração com relatórios LCOV para exibição de cobertura detalhada.
-- Expansão automática de arquivos com cobertura incompleta.
+## 🚀 Funcionalidades Principais
 
-## Instalação
+- **Visualização da cobertura de código**: Oferece uma interface clara para ver quais partes do seu código estão cobertas pelos testes.
+- **Suporte a diferentes tipos de cobertura**: Linhas, Funções e Branches.
+- **Compatibilidade com JavaScript e TypeScript**: Funciona com projetos que utilizam frameworks de teste que geram arquivos de cobertura no formato LCOV.
+- **Suporte para frameworks de teste populares**: Funciona com frameworks como **Jest**, **Mocha**, **Karma**, e outros que geram arquivos de cobertura LCOV.
 
-1. Faça o download da extensão do Visual Studio Marketplace ou do repositório.
-2. Abra o Visual Studio Code.
-3. Vá até a aba **Extensões** e clique em **Instalar a partir do VSIX** se estiver instalando manualmente.
-4. Após instalar, abra qualquer projeto com relatórios LCOV e a extensão automaticamente detectará a cobertura.
+## 🛠️ Instalação
 
-## Como Usar
+1. Abra o Visual Studio Code.
+2. Acesse a aba de **Extensões** e busque por **Auto Test Coverage AI**.
+3. Clique em **Instalar** e siga as instruções.
+   
+   Alternativamente, você pode instalar a extensão diretamente do [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=cleiton-dev.auto-test-coverage-ai).
 
-1. Abra um arquivo de código em seu projeto.
-2. Selecione o tipo de cobertura que deseja visualizar (linhas, funções ou branches) através do seletor na view `codeCoverage`.
-3. A extensão irá destacar visualmente as partes do código que estão cobertas ou não pelos testes.
+## 📖 Como Usar
 
-## Atalhos
+1. **Execute o script de teste do seu projeto**: Para que a extensão funcione, você deve rodar seus testes de unidade para gerar o arquivo de cobertura (geralmente um arquivo no formato LCOV).
+   
+   ```bash
+   npm test -- --coverage
+   ```
 
-- **Mostrar cobertura de código**: Execute o comando `Coverage: Show Coverage` no Pallete de comandos (`Ctrl+Shift+P`).
-- **Atualizar cobertura de código**: Execute o comando `Coverage: Refresh` para recarregar os dados de cobertura.
+   Esse comando depende do framework de testes utilizado no seu projeto. Frameworks como **Jest**, **Mocha** e **Karma** geralmente geram arquivos de cobertura LCOV por padrão.
 
-## Suporte
+2. **Abra o Visual Studio Code**: A extensão automaticamente detectará o arquivo LCOV gerado e exibirá a cobertura de código correspondente.
 
-Se você encontrar algum problema ou tiver sugestões, por favor, abra uma [issue no GitHub](#) (substitua com o link correto se o repositório for acessível).
+3. **Visualize a cobertura**: A cobertura de código será exibida diretamente no editor, destacando as linhas cobertas e não cobertas.
 
-## Licença
+4. **Visualize detalhes da Cobertura**: Coloque o ponteiro do mouse em um arquivo da arvore e será exibido um tolltip com detalhes da cobertura.
 
-Este projeto está licenciado sob a Licença MIT. Para mais informações, consulte o arquivo `LICENSE` incluído na extensão.
+## 💡 O que está por vir?
 
-## Contribuições
+- Integração com LLM para geração automática de testes.
+- Definição de contexto para gerar os testes.
+- Melhorias no desempenho e na acessibilidade.
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir um Pull Request com melhorias ou novas funcionalidades.
+## 🧑‍💻 Contribuições e Feedback
 
-## Apoie o Projeto
+Contribuições são bem-vindas! Se você tem alguma sugestão ou encontrou um problema, deixe seu comentario
 
-Se você gostou desta extensão e quer apoiar o desenvolvimento contínuo, considere fazer uma doação. Toda contribuição é bem-vinda!
+## 💖 Doações
 
-[Faça uma doação](https://biolivre.com.br/cleitondev)
+Se você gostou da extensão e deseja apoiar o desenvolvimento contínuo, considere fazer uma doação: [biolivre.com.br/cleitondev](http://biolivre.com.br/cleitondev).
+
+## 📜 Licença
+Esta extensão está licenciada sob a Creative Commons Attribution-NonCommercial 4.0 International. Isso significa que você pode usar e colaborar com o código livremente, mas não pode utilizá-lo para fins comerciais sem permissão prévia.
+
+Veja o arquivo [LICENSE](https://creativecommons.org/licenses/by-nc/4.0/deed.pt-br) para mais detalhes.

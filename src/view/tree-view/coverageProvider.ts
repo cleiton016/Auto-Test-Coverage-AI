@@ -44,6 +44,12 @@ export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
         return element;
     }
 
+    getParent(element: CoverageItem): vscode.ProviderResult<CoverageItem> {
+        // Deve retornar o pai do elemento atual
+        const parents = this.getParents(element);
+        return parents ? parents[parents.length - 1] : null;
+    }
+
     getParents(element: CoverageItem): CoverageItem[] | undefined {
         // Deve retornar uma lista contendo todos os parentes até o nível raiz
         const parents: CoverageItem[] = [];
@@ -110,9 +116,10 @@ export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
                         );
                     } else {
                         // Criar um item de diretório
+                        const collapse = index < 4? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed;
                         existingItem = new CoverageItem(
                             part,
-                            vscode.TreeItemCollapsibleState.Collapsed
+                            collapse
                         );
                         existingItem.children = [];
                     }
@@ -130,20 +137,5 @@ export class CoverageProvider implements vscode.TreeDataProvider<CoverageItem> {
         });
 
         this.refresh();  // Atualizar a árvore
-    }
-
-
-    locateAndExpandFile(filePath: string): void {
-        const element = this.getElement(filePath);
-        const parents = this.getParents(element);
-        if (parents) {
-            parents.forEach(parent => {
-                console.log('id: ', parent.id ,'Parent: ', parent.label, 'Collapsible State: ', parent.collapsibleState);
-                if (parent.collapsibleState === vscode.TreeItemCollapsibleState.Collapsed) {
-                    parent.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-                }
-            });
-        }
-        this.refresh();
     }
 }

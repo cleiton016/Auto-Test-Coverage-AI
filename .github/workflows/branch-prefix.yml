@@ -31,6 +31,11 @@ jobs:
           echo "Branch name: $BRANCH_NAME"
           echo "::set-output name=branch_name::$BRANCH_NAME"
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
       - name: Create and push branch
         env:
           TOKEN: ${{ secrets.PUSH_TOKEN }}

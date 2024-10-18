@@ -18,7 +18,7 @@ export class SelectTypeCoverageItem extends vscode.TreeItem {
                 title: 'Selecionar tipo de cobertura',
                 command: 'auto-test-coverage-ai.selectCoverageType',
                 arguments: [slug]
-            }
+            };
         }
 
         onSelectedCoverageTypeChanged((type) => {

@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Select coverage type
     const selectCoverageType = vscode.commands.registerCommand('auto-test-coverage-ai.selectCoverageType', async (select: string) => {
         $selectedCoverageType.fire(select);
-    })
+    });
 
     context.subscriptions.push(selectCoverageType);   
 

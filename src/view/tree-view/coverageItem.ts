@@ -38,7 +38,7 @@ export class CoverageItem extends vscode.TreeItem {
     private openFile() {
         if (this.resourceUri) {
             // Deve pegar o caminho completo do arquivo para abrir no editor
-            const fullPathUri =  vscode.Uri.file(path.join(vscode.workspace.rootPath || '', this.resourceUri.fsPath))
+            const fullPathUri =  vscode.Uri.file(path.join(vscode.workspace.rootPath || '', this.resourceUri.fsPath));
             this.command = {
                 command: 'auto-test-coverage-ai.openFile',
                 title: 'Open File',

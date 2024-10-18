@@ -59,8 +59,10 @@ export class CodeCoverageProvider {
 
     // Método para localizar e expandir o arquivo
     public locateAndExpandFile(filePath: string): void {
-        const item = this.coverageProvider.getElement(filePath);
-        this.treeView.reveal(item, { select: true, focus: true, expand: true });
+        if (this.treeView.visible){
+            const item = this.coverageProvider.getElement(filePath);
+            this.treeView.reveal(item, { select: true, focus: true, expand: true });
+        }
     }
 
     get selectedCoverageType(): string {

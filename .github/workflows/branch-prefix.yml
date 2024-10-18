@@ -1,19 +1,30 @@
-name: Create Branch with Prefix
+name: Create Branch from Issue
 
 on:
   issues:
     types: [labeled]
 
 jobs:
-  label-check:
+  create_branch:
     runs-on: ubuntu-latest
+    if: |
+      contains(github.event.issue.labels.*.name, 'Feature') || 
+      contains(github.event.issue.labels.*.name, 'Bug') || 
+      contains(github.event.issue.labels.*.name, 'Hotfix') ||
+      contains(github.event.issue.labels.*.name, 'Chore')
     steps:
-      - name: Check if the issue is labeled
-        if: contains(github.event.issue.labels.*.name, 'Feature') || 
-            contains(github.event.issue.labels.*.name, 'Bug') || 
-            contains(github.event.issue.labels.*.name, 'Hotfix') ||
-            contains(github.event.issue.labels.*.name, 'Chore')
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set the branch prefix based on the issue label
         run: |
-          BRANCH_PREFIX=$(echo "${{ github.event.issue.labels[0].name }}" | tr '[:upper:]' '[:lower:]')
-          BRANCH_NAME="${BRANCH_PREFIX}/${{ github.event.issue.number }}-${{ github.event.issue.title }}"
-          echo "Branch Name: $BRANCH_NAME"
+          LABEL=$(echo "${{ github.event.issue.labels[0].name }}" | tr '[:upper:]' '[:lower:]')
+          ISSUE_NUMBER=${{ github.event.issue.number }}
+          ISSUE_TITLE=$(echo "${{ github.event.issue.title }}" | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
+          BRANCH_NAME="${LABEL}/${ISSUE_TITLE}"
+          echo "Creating branch: $BRANCH_NAME"
+
+      - name: Create and push branch
+        run: |
+          git checkout -b $BRANCH_NAME
+          git push origin $BRANCH_NAME

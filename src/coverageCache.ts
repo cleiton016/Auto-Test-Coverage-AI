@@ -1,11 +1,10 @@
 import * as fs from 'fs';
-import * as vscode from 'vscode';
 import { CoverageData, CoverageFile } from "@/interfaces";
 import { LCOV_FILE_PATH } from './utils';
 
 export class CoverageCache {
     private cache: Map<string, { coverage: CoverageData, modifiedTime: number }>;
-    private cacheOpenFile: CoverageFile
+    private cacheOpenFile: CoverageFile;
     constructor() {
         this.cache = new Map();
         this.cacheOpenFile = {} as CoverageFile;
@@ -14,8 +13,7 @@ export class CoverageCache {
     // Verifica se o arquivo LCOV foi modificado
     public isCacheValid(filePath: string): boolean {
         const cacheEntry = this.cache.get(filePath);
-        if (!cacheEntry) return false;
-
+        if (!cacheEntry) { return false; }
         const stats = fs.statSync(filePath);
         return stats.mtimeMs === cacheEntry.modifiedTime;
     }
@@ -52,7 +50,7 @@ export class CoverageCache {
     }
 
     public updateCacheFile(coverage: CoverageFile) {
-        this.cacheOpenFile = coverage
+        this.cacheOpenFile = coverage;
     }
 
     // Limpa o cache

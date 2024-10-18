@@ -56,7 +56,7 @@ export const parseLcov = util.promisify(parse);
 
 // Obsevable para monitorar a seleção do tipo de cobertura
 export const $selectedCoverageType = new vscode.EventEmitter<string | undefined>();
-export const onSelectedCoverageTypeChanged = $selectedCoverageType.event
+export const onSelectedCoverageTypeChanged = $selectedCoverageType.event;
 onSelectedCoverageTypeChanged((type) => {
     vscode.window.showInformationMessage(`Cobertura trocada para: ${type}`);
     showCoverageReport(vscode.window.activeTextEditor, type);

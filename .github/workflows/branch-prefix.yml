@@ -8,10 +8,10 @@ jobs:
   create_branch:
     runs-on: ubuntu-latest
     if: |
-        contains(github.event.issue.labels.*.name, 'Feature') || 
-        contains(github.event.issue.labels.*.name, 'Bug') || 
-        contains(github.event.issue.labels.*.name, 'Hotfix') ||
-        contains(github.event.issue.labels.*.name, 'Chore')
+      contains(github.event.issue.labels.*.name, 'Feature') || 
+      contains(github.event.issue.labels.*.name, 'Bug') || 
+      contains(github.event.issue.labels.*.name, 'Hotfix') ||
+      contains(github.event.issue.labels.*.name, 'Chore')
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
@@ -19,15 +19,19 @@ jobs:
       - name: Set the branch prefix based on the issue label
         id: create_branch_name
         run: |
-            LABEL=$(echo "${{ github.event.issue.labels[0].name }}" | tr '[:upper:]' '[:lower:]')
-            ISSUE_NUMBER=${{ github.event.issue.number }}
-            ISSUE_TITLE=$(echo "${{ github.event.issue.title }}" | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
-            BRANCH_NAME="${LABEL}/${ISSUE_TITLE}"
-            echo "Branch name: $BRANCH_NAME"
-            echo "::set-output name=branch_name::$BRANCH_NAME"
+          # Obtém a primeira label e converte para minúsculas
+          LABEL=$(echo "${{ github.event.issue.labels[0].name }}" | tr '[:upper:]' '[:lower:]')
+          
+          # Remove qualquer texto entre colchetes do título da issue
+          ISSUE_TITLE=$(echo "${{ github.event.issue.title }}" | sed 's/\[.*\] //g' | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
+          
+          # Monta o nome da branch no formato correto
+          BRANCH_NAME="${LABEL}/${ISSUE_TITLE}"
+          
+          echo "Branch name: $BRANCH_NAME"
+          echo "::set-output name=branch_name::$BRANCH_NAME"
 
       - name: Create and push branch
         run: |
-          echo "Creating branch ${{ steps.create_branch_name.outputs.branch_name }}"
           git checkout -b ${{ steps.create_branch_name.outputs.branch_name }}
           git push origin ${{ steps.create_branch_name.outputs.branch_name }}

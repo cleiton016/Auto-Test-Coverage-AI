@@ -4,7 +4,7 @@
   "description": "",
   "version": "0.0.2",
   "publisher": "cleiton-dev",
-  "license":"LGPL-3.0-only",
+  "license": "LGPL-3.0-only",
   "repository": {
     "type": "git",
     "url": "https://github.com/cleiton016/Auto-Test-Coverage-AI"
@@ -37,7 +37,6 @@
           "id": "codeCoverage",
           "title": "Code Coverage",
           "icon": "assets/icons/full_coverage.svg"
-          
         }
       ]
     },
@@ -55,7 +54,6 @@
           "contextualTitle": "Type Coverage",
           "when": "true"
         }
-
       ]
     },
     "menus": {

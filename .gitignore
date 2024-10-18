@@ -1,5 +1,7 @@
 out
 dist
 node_modules
+coverage
 .vscode-test/
+.nyc_output/
 *.vsix

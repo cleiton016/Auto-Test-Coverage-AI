@@ -26,5 +26,6 @@ jobs:
 
       - name: Create and push branch
         run: |
-          git checkout -b $BRANCH_NAME
-          git push origin $BRANCH_NAME
+            echo "Creating branch: $BRANCH_NAME"
+            git checkout -B $BRANCH_NAME
+            git push origin $BRANCH_NAME

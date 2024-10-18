@@ -1,0 +1,19 @@
+name: Create Branch with Prefix
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  label-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if the issue is labeled
+        if: contains(github.event.issue.labels.*.name, 'Feature') || 
+            contains(github.event.issue.labels.*.name, 'Bug') || 
+            contains(github.event.issue.labels.*.name, 'Hotfix') ||
+            contains(github.event.issue.labels.*.name, 'Chore')
+        run: |
+          BRANCH_PREFIX=$(echo "${{ github.event.issue.labels[0].name }}" | tr '[:upper:]' '[:lower:]')
+          BRANCH_NAME="${BRANCH_PREFIX}/${{ github.event.issue.number }}-${{ github.event.issue.title }}"
+          echo "Branch Name: $BRANCH_NAME"

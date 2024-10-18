@@ -1,5 +1,6 @@
 ---
 name: Solicitar correção de bug
+about: Abra uma solicitação de bug
 title: "[Bug] Descrição da Issue"
 labels: Bug
 assignees: ''

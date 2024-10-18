@@ -1,16 +1,16 @@
 ---
-name: Escolha um tipo de Issue
-about: Selecione uma das tags para categorizar o tipo de issue
-title: "[TAG] Descrição da Issue"
-labels: Bug, Feature, Hotfix, Chore
+name: Solicitar correção de bug
+title: "[Bug] Descrição da Issue"
+labels: Bug
 assignees: ''
 
 ---
 
-**Selecione uma tag abaixo:**
-- [ ] Feature
-- [ ] Bug
-- [ ] Hotfix
-- [ ] Chore
+- [x] Bug
 
-**Descreva o problema ou a funcionalidade solicitada:**
+**Descreva o problema**
+
+
+
+**Passo a passo para reproduzir o problema**
+

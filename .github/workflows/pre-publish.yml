@@ -39,7 +39,7 @@ jobs:
 
     - name: Upload VSIX file
       id: upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: extension-vsix
         path: '*.vsix'

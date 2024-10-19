@@ -40,12 +40,6 @@ jobs:
       with:
         name: extension-vsix
         path: '*.vsix'
-
-    - name: Create Draft Release
-      uses: softprops/action-gh-release@v1
-      with:
-        draft: true  # Cria uma release como rascunho para revisão
-        files: "*.vsix"
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        url: ${{ steps.package.outputs.url }}
     

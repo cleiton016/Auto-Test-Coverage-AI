@@ -1,0 +1,16 @@
+#!/bin/bash
+
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+PREFIX=""
+
+if [[ $BRANCH_NAME == *"feature"* ]]; then
+    PREFIX="feature"
+elif [[ $BRANCH_NAME == *"bug"* ]]; then
+    PREFIX="bug"
+elif [[ $BRANCH_NAME == *"hotfix"* ]]; then
+    PREFIX="hotfix"
+elif [[ $BRANCH_NAME == *"chore"* ]]; then
+    PREFIX="chore"
+fi
+
+# Agora o commit ou a branch será gerada com o prefixo correto

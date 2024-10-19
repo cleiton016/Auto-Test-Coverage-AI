@@ -42,4 +42,6 @@ jobs:
         path: '*.vsix'
       env:
         url: ${{ steps.package.outputs.url }}
-    
+    - name: Publish Extension
+      run: |
+        echo ${{ steps.artifact-upload.outputs.artifact-url }}

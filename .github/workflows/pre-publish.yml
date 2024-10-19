@@ -35,7 +35,7 @@ jobs:
         npm install -g vsce
         vsce package
       env:
-        NODE_ENV: production
+        NODE_ENV: development
 
     - name: Upload VSIX file
       id: upload

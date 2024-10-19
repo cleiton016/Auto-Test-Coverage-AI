@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     environment:
-      name: Url para download
+      name: ${{ github.event.repository.name }}
       url: ${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${{ steps.upload.outputs.run_id }}
     runs-on: ubuntu-latest
     steps:

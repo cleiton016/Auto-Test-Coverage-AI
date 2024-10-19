@@ -9,7 +9,7 @@ jobs:
   build:
     environment:
       name: ${{ github.event.repository.name }}
-      url: ${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${{ steps.upload.outputs.run_id }}
+      url: ${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${{github.run_id}}/artifacts/${{ steps.upload.outputs.artifact-id }}  # URL para download do artefato gerado
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code

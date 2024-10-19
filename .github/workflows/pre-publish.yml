@@ -1,0 +1,47 @@
+name: Publish to Develop
+
+on:
+  push:
+    branches:
+      - develop  # Roda quando houver push na branch develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # Use a versão do Node.js adequada para o projeto
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
+    - name: Package Extension
+      run: |
+        npm install -g vsce
+        vsce package
+      env:
+        NODE_ENV: production
+
+    - name: Upload VSIX file
+      uses: actions/upload-artifact@v3
+      with:
+        name: extension-vsix
+        path: '*.vsix'
+
+    - name: Create Draft Release
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: true  # Cria uma release como rascunho para revisão
+        files: "*.vsix"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    

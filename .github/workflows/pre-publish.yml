@@ -6,9 +6,9 @@ on:
       - develop  # Roda quando houver push na branch develop
 
 jobs:
-  build:
+  # Job para configuração e instalação
+  setup:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -20,13 +20,32 @@ jobs:
 
     - name: Install dependencies
       run: npm install
-       # Inicia o xvfb para simular um ambiente gráfico
+
+  # Job para rodar testes com xvfb
+  test:
+    runs-on: ubuntu-latest
+    needs: setup  # Esse job depende do job 'setup'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Run xvfb
       run: |
         sudo apt-get install xvfb
         export DISPLAY=:99
         Xvfb :99 -screen 0 1024x768x24 &
         npm test
+
+  # Job para empacotar a extensão
+  package:
+    runs-on: ubuntu-latest
+    needs: test  # Esse job depende do job 'test'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: npm install
 
     - name: Package Extension
       run: |
@@ -41,7 +60,5 @@ jobs:
         name: extension-vsix
         path: '*.vsix'
       env:
-        url: ${{ steps.package.outputs.url }}
-    - name: Publish Extension
-      run: |
-        echo ${{ steps.artifact-upload.outputs.artifact-url }}
+        name: extension-vsix
+        url: ${{ steps.artifact-upload.outputs.artifact-url }}

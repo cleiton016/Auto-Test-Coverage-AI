@@ -19,13 +19,15 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20.9.0'
+        node-version: 18
 
     - name: Install dependencies
-      run: npm install
+      run: npm install --force
 
     - name: Run tests
-      run: npm test
+      run: 
+        node -v
+        npm test
 
     - name: Package Extension
       run: |

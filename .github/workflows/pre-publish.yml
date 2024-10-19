@@ -8,8 +8,8 @@ on:
 jobs:
   build:
     environment:
-      name: ${{ github.event.repository.name }}
-      url: ${{ steps.upload.outputs.artifact_url }}
+      name: ${{ github.event.repository.name }}:' 'develop
+      url: https://github.com/${{ github.repository }}/actions/runs/${{github.run_id}}/artifacts/${{ steps.upload.outputs.artifact-id }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -35,11 +35,11 @@ jobs:
         npm install -g vsce
         vsce package
       env:
-        NODE_ENV: production
+        NODE_ENV: development
 
     - name: Upload VSIX file
       id: upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: extension-vsix
         path: '*.vsix'

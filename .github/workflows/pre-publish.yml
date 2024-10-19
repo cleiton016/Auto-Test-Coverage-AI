@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     environment:
-      name: ${{ github.event.repository.name }}
+      name: ${{ github.event.repository.name }}:' 'develop
       url: https://github.com/${{ github.repository }}/actions/runs/${{github.run_id}}/artifacts/${{ steps.upload.outputs.artifact-id }}
     runs-on: ubuntu-latest
     steps:

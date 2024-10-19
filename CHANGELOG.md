@@ -17,10 +17,16 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
   
 ## [0.0.2] - 2024-10-17
 
-## Melhorias
+### Melhorias
 - Identificação automatica do arquivo de cobertura
 
-### O que está por vir
+## [0.0.3] - 
+
+### Correção de bug ##
+- View abrindo fora de contexto 
+    - Você pode visualizar a issue correção desse bug [clicando aqui](https://github.com/cleiton016/Auto-Test-Coverage-AI/issues/1)
+
+## 💡 O que está por vir
 - Integração com LLM para geração automática de testes.
 - Definição de contexto para geração de testes focados no código não coberto.
 - Melhorias de desempenho e acessibilidade.

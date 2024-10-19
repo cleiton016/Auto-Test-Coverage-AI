@@ -20,7 +20,13 @@ jobs:
 
     - name: Install dependencies
       run: npm install
-
+       # Inicia o xvfb para simular um ambiente gráfico
+    - name: Run xvfb
+      run: |
+        sudo apt-get install xvfb
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1024x768x24 &
+        
     - name: Run tests
       run: npm test
 

@@ -3,11 +3,13 @@ name: Publish to Develop
 on:
   push:
     branches:
-      - develop
+      - develop  # Roda quando houver push na branch develop
 
 jobs:
-  # Job para configuração e instalação
-  setup:
+  build:
+    environment:
+      name: ${{ github.event.repository.name }}
+      url: ${{ steps.upload.outputs.artifact_url }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -16,57 +18,17 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 20
-
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-modules-
+        node-version: 20  # Use a versão do Node.js adequada para o projeto
 
     - name: Install dependencies
       run: npm install
-
-  # Job para rodar testes com xvfb
-  test:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
-
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-modules-
-
+       # Inicia o xvfb para simular um ambiente gráfico
     - name: Run xvfb
       run: |
         sudo apt-get install xvfb
         export DISPLAY=:99
         Xvfb :99 -screen 0 1024x768x24 &
         npm test
-
-  # Job para empacotar a extensão
-  package:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Install dependencies
-      run: npm install
 
     - name: Package Extension
       run: |
@@ -76,7 +38,9 @@ jobs:
         NODE_ENV: production
 
     - name: Upload VSIX file
+      id: upload
       uses: actions/upload-artifact@v3
       with:
         name: extension-vsix
         path: '*.vsix'
+    

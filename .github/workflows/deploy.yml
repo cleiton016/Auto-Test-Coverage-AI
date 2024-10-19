@@ -1,0 +1,40 @@
+name: Publish Extension
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+    
+jobs:
+  build:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'Deploy')
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+
+    - name: Package Extension
+      run: |
+        npm install -g vsce
+        vsce package
+
+    - name: Publish Extension
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      run: |
+        vsce publish
+
